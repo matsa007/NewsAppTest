@@ -10,7 +10,7 @@ import Foundation
 struct Result: Codable {
     let status: String?
     let totalResults: Int?
-    let articles: Array <Article>
+    let articles: [Article]
 }
 
 struct Article: Codable {
@@ -19,6 +19,6 @@ struct Article: Codable {
     let description: String?
     let url: String?
     let urlToImage: String?
-    let publishedAt: Date?
+    let publishedAt: String?
     let content: String?
 }
