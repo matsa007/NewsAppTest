@@ -13,7 +13,10 @@ final class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         newsTableView.dataSource = self
-        // Do any additional setup after loading the view.
+        DispatchQueue.main.async {
+            NetworkManager.shared.loadDataByApi()
+        }
+        
     }
 
 
