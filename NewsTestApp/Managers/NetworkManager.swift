@@ -7,10 +7,10 @@
 
 import Foundation
 
-class NetworkManager {
+final class NetworkManager {
     static var shared = NetworkManager()
-    let apiStringUrl = "https://newsapi.org/v2/everything?q=bitcoin&apiKey=adf5882279984198ac2a9542ac6eb879"
-//    функция загрузки и декодирования JSON
+    private let apiStringUrl = "https://newsapi.org/v2/everything?q=bitcoin&apiKey=adf5882279984198ac2a9542ac6eb879"
+
     func loadDataByApi(completionHandler: @escaping (Swift.Result<[Article], Error>) -> Void ) {
         guard let url = URL(string: apiStringUrl) else { return }
         URLSession.shared.dataTask(with: url) { (data, response, error) in
@@ -22,7 +22,6 @@ class NetworkManager {
                 let results = try JSONDecoder().decode(Result.self, from: data)
                 completionHandler(.success(results.articles))
                 print(results)
-                
             } catch {
                 print(error.localizedDescription)
             }

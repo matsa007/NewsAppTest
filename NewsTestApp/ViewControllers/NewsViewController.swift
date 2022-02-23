@@ -9,8 +9,8 @@ import UIKit
 
 final class NewsViewController: UIViewController {
     @IBOutlet weak var newsTableView: UITableView!
-    var articles = [Article]()
-    var newsViewModel = [NewsTableViewCellModel]()
+    private var articles = [Article]()
+    private var newsViewModel = [NewsTableViewCellModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,18 +41,12 @@ final class NewsViewController: UIViewController {
 extension NewsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         newsViewModel.count
-        //        10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell") as? NewsTableViewCell else { return UITableViewCell() }
         cell.configure(model: newsViewModel[indexPath.row])
-        //        cell.newsTitleLabel.text = "Demo Title"
-        //        cell.newsDescriptionLabel.text = "Demo Description"
-        //        cell.newsImageView.image = UIImage(named: "EUR")
         return cell
     }
-    
-    
 }
 

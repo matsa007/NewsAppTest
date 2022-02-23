@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NewsTableViewCell: UITableViewCell {
+final class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsImageView: UIImageView!
     @IBOutlet weak var newsTitleLabel: UILabel!
     @IBOutlet weak var newsDescriptionLabel: UILabel!
@@ -20,20 +20,20 @@ class NewsTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-    }
-    
     func configure(model: NewsTableViewCellModel) {
         newsTitleLabel.text = model.title
         newsDescriptionLabel.text = model.subTitle
         if let data = model.imageData {
             newsImageView.image = UIImage(data: data)
-        } else { return }
-        
+        } else if let url = model.imageUrl {
+            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+                guard let data = data else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self?.newsImageView.image = UIImage(data: data)
+                }
+            }.resume()
+        }
     }
 }
