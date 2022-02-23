@@ -18,6 +18,7 @@
 		493DA14227C55C37004E2030 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 493DA14027C55C37004E2030 /* LaunchScreen.storyboard */; };
 		493DA14A27C55D59004E2030 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493DA14927C55D59004E2030 /* FavoritesViewController.swift */; };
 		4968407B27C5647C00AAD716 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4968407A27C5647C00AAD716 /* NewsTableViewCell.swift */; };
+		49E2776527C65DE60038E638 /* NewsTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E2776427C65DE60038E638 /* NewsTableViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		493DA14327C55C37004E2030 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		493DA14927C55D59004E2030 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 		4968407A27C5647C00AAD716 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
+		49E2776427C65DE60038E638 /* NewsTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				4933F1A227C5685500459077 /* Article.swift */,
+				49E2776427C65DE60038E638 /* NewsTableViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -82,15 +85,15 @@
 		493DA13127C55C36004E2030 /* NewsTestApp */ = {
 			isa = PBXGroup;
 			children = (
-				4933F1A427C56A0700459077 /* Managers */,
-				4933F1A127C5682900459077 /* Models */,
 				493DA13227C55C36004E2030 /* AppDelegate.swift */,
 				493DA13427C55C36004E2030 /* SceneDelegate.swift */,
-				493DA13827C55C36004E2030 /* Main.storyboard */,
-				493DA14B27C55F1E004E2030 /* ViewControllers */,
+				4933F1A127C5682900459077 /* Models */,
 				4968407C27C564A000AAD716 /* Cells */,
-				493DA13E27C55C37004E2030 /* Assets.xcassets */,
+				4933F1A427C56A0700459077 /* Managers */,
+				493DA14B27C55F1E004E2030 /* ViewControllers */,
+				493DA13827C55C36004E2030 /* Main.storyboard */,
 				493DA14027C55C37004E2030 /* LaunchScreen.storyboard */,
+				493DA13E27C55C37004E2030 /* Assets.xcassets */,
 				493DA14327C55C37004E2030 /* Info.plist */,
 				493DA13B27C55C36004E2030 /* NewsTestApp.xcdatamodeld */,
 			);
@@ -190,6 +193,7 @@
 				493DA13327C55C36004E2030 /* AppDelegate.swift in Sources */,
 				4968407B27C5647C00AAD716 /* NewsTableViewCell.swift in Sources */,
 				4933F1A627C56A3200459077 /* NetworkManager.swift in Sources */,
+				49E2776527C65DE60038E638 /* NewsTableViewModel.swift in Sources */,
 				493DA13D27C55C36004E2030 /* NewsTestApp.xcdatamodeld in Sources */,
 				493DA14A27C55D59004E2030 /* FavoritesViewController.swift in Sources */,
 				493DA13527C55C36004E2030 /* SceneDelegate.swift in Sources */,
