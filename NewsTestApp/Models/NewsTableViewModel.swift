@@ -7,7 +7,8 @@
 
 import Foundation
 
-final class NewsTableViewCellModel {
+/*под вопросом нужды?????*/
+class NewsTableViewCellModel {
     let title: String
     let subTitle: String
     let imageUrl: URL?
@@ -15,7 +16,7 @@ final class NewsTableViewCellModel {
     let publishedAt: String
     var imageData: Data? = nil
     
-    init(title: String, subTitle: String, imageUrl: URL, contentUrl: String, publishedAt: String) {
+    init(title: String, subTitle: String, imageUrl: URL?, contentUrl: String, publishedAt: String) {
         self.title = title
         self.subTitle = subTitle
         self.imageUrl = imageUrl
