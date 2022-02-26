@@ -20,7 +20,7 @@ class NewsTableViewCell: UITableViewCell {
         return label
     }()
     
-
+    
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -40,8 +40,8 @@ class NewsTableViewCell: UITableViewCell {
         let titleLabel = newsTitleLabel
         let imageView = newsImageView
         descriptionLabel!.sizeToFit()
-//        descriptionLabel?.lineBreakMode = .byWordWrapping
-       
+        //        descriptionLabel?.lineBreakMode = .byWordWrapping
+        
         descriptionLabel?.adjustsFontSizeToFitWidth = true
         descriptionLabel?.textAlignment = .right
         descriptionLabel?.numberOfLines = 0
@@ -50,7 +50,6 @@ class NewsTableViewCell: UITableViewCell {
         titleLabel?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
         imageView?.frame = .init(x: 0, y: 30, width: 100, height: 100)
         descriptionLabel?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 150), height: 100)
-    
         NSLayoutConstraint.activate([
             linkLabel.bottomAnchor.constraint(equalTo: descriptionLabel!.bottomAnchor),
             linkLabel.trailingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor),
@@ -58,7 +57,7 @@ class NewsTableViewCell: UITableViewCell {
             linkLabel.topAnchor.constraint(equalTo: descriptionLabel!.bottomAnchor, constant: -20)
         ])
     }
-
+    
     func showMoreAdd() {
         let label = newsDescriptionLabel
         let linkLabel = linkLabel
@@ -78,16 +77,13 @@ class NewsTableViewCell: UITableViewCell {
     
     @objc func tapGestureTapped() {
         print("GESTURE TAPPED")
-        
-//        FavoritesViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
-//        subtile.append("newsDescriptionLabel.text!")
         NewsViewController.shared.favoritesImage.append(newsImageView.image!)
         NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
         NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
         
         newsDescriptionLabel.backgroundColor = .green
         print(newsTitleLabel.text ?? "No text")
-//        newsDescriptionLabel.lineBreakMode = .byWordWrapping
+        //        newsDescriptionLabel.lineBreakMode = .byWordWrapping
         newsDescriptionLabel.numberOfLines -= 1
         newsDescriptionLabel.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 150)
         newsDescriptionLabel.textAlignment = .left

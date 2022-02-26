@@ -9,11 +9,9 @@ import UIKit
 
 final class FavoritesViewController: UIViewController {
     static var shared = FavoritesViewController()
-
     @IBOutlet weak var favoritesTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-//        favoritesTableView.register(UITableViewCell.self, forCellReuseIdentifier: "favoriteCell")
         favoritesTableView.dataSource = self
         favoritesTableView.delegate = self
     }
@@ -21,13 +19,7 @@ final class FavoritesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         favoritesTableView.reloadData()
-        print("will appear")
     }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-    }
-  
 }
 
 extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
@@ -46,9 +38,5 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         200
-    }
-    
-    
-    
-    
+    }   
 }

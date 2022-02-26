@@ -11,7 +11,6 @@ extension UILabel {
     
     func addTrailing(with trailingText: String, moreText: String, moreTextFont: UIFont, moreTextColor: UIColor) {
         let readMoreText: String = trailingText + moreText
-        
         let lengthForVisibleString: Int = self.vissibleTextLength
         let mutableString: String = self.text!
         let trimmedString: String? = (mutableString as NSString).replacingCharacters(in: NSRange(location: lengthForVisibleString, length: ((self.text?.count)! - lengthForVisibleString)), with: "")
@@ -29,7 +28,6 @@ extension UILabel {
         let labelWidth: CGFloat = self.frame.size.width
         let labelHeight: CGFloat = self.frame.size.height
         let sizeConstraint = CGSize(width: labelWidth, height: CGFloat.greatestFiniteMagnitude)
-        
         let attributes: [AnyHashable: Any] = [NSAttributedString.Key.font: font]
         let attributedText = NSAttributedString(string: self.text!, attributes: attributes as? [NSAttributedString.Key : Any])
         let boundingRect: CGRect = attributedText.boundingRect(with: sizeConstraint, options: .usesLineFragmentOrigin, context: nil)
