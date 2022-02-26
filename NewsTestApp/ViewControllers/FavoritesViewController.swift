@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 final class FavoritesViewController: UIViewController {
     static var shared = FavoritesViewController()
@@ -30,13 +31,19 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FavoritesTableViewCell", for: indexPath) as? FavoritesTableViewCell
-        cell?.favoritesTitleLabel.text = NewsViewController.shared.favoritesTitle[indexPath.row]
-        cell?.favoritesSubtitleLabel.text = NewsViewController.shared.favoritesSubtitle[indexPath.row]
-        cell?.favoritesImageView.image = NewsViewController.shared.favoritesImage[indexPath.row]
+        DispatchQueue.main.async {
+            cell?.favoritesTitleLabel.text = NewsViewController.shared.favoritesTitle[indexPath.row]
+            cell?.favoritesSubtitleLabel.text = NewsViewController.shared.favoritesSubtitle[indexPath.row]
+            cell?.favoritesImageView.image = NewsViewController.shared.favoritesImage[indexPath.row]
+        }
+        
         return cell!
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         200
-    }   
+    }
+    
+   
+    
 }

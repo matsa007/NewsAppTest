@@ -10,31 +10,47 @@ import SafariServices
 import Kingfisher
 
 final class NewsViewController: UIViewController {
+    private let defaults = UserDefaults.standard
     @IBOutlet weak var newsTableView: UITableView!
     @IBOutlet var newsSearchBar: UISearchBar!
     static var shared = NewsViewController()
     var articles: [Article] = []
     let newsTableViewCell = NewsTableViewCell()
-    lazy var favoritesTitle: Array <String> = [] {
-        didSet {
-            print(favoritesTitle)
+    var favoritesTitle: Array <String> {
+        set {
+            defaults.set(newValue, forKey: "title")
+        }
+        
+        get {
+            defaults.object(forKey: "title") as? [String] ?? []
         }
     }
     
-    lazy var favoritesSubtitle: Array <String> = [] {
-        didSet {
-            DispatchQueue.main.async {
-                
-                print(self.favoritesSubtitle)
-            }
+    var favoritesSubtitle: Array <String> {
+        set {
+            defaults.set(newValue, forKey: "subtitle")
+        }
+        
+        get {
+            defaults.object(forKey: "subtitle") as? [String] ?? []
         }
     }
     
-    lazy var favoritesImage: Array <UIImage> = [] {
-        didSet {
-            print(favoritesImage)
-        }
-    }
+    var favoritesImage: Array <UIImage> = [UIImage(named: "EUR")!]
+//    {
+//        set {
+//            defaults.set(newValue, forKey: "img")
+//        }
+//
+//        get {
+//            defaults.object(forKey: "img") as? [UIImage] ?? UII
+//        }
+//    }
+    
+    
+    
+   
+    
     
     var searchBarText: String? {
         didSet {

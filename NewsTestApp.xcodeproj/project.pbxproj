@@ -15,7 +15,6 @@
 		493DA13527C55C36004E2030 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493DA13427C55C36004E2030 /* SceneDelegate.swift */; };
 		493DA13727C55C36004E2030 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493DA13627C55C36004E2030 /* NewsViewController.swift */; };
 		493DA13A27C55C36004E2030 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 493DA13827C55C36004E2030 /* Main.storyboard */; };
-		493DA13D27C55C36004E2030 /* NewsTestApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 493DA13B27C55C36004E2030 /* NewsTestApp.xcdatamodeld */; };
 		493DA13F27C55C37004E2030 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 493DA13E27C55C37004E2030 /* Assets.xcassets */; };
 		493DA14227C55C37004E2030 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 493DA14027C55C37004E2030 /* LaunchScreen.storyboard */; };
 		493DA14A27C55D59004E2030 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493DA14927C55D59004E2030 /* FavoritesViewController.swift */; };
@@ -33,7 +32,6 @@
 		493DA13427C55C36004E2030 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		493DA13627C55C36004E2030 /* NewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewController.swift; sourceTree = "<group>"; };
 		493DA13927C55C36004E2030 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		493DA13C27C55C36004E2030 /* NewsTestApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NewsTestApp.xcdatamodel; sourceTree = "<group>"; };
 		493DA13E27C55C37004E2030 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		493DA14127C55C37004E2030 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		493DA14327C55C37004E2030 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -107,7 +105,6 @@
 				493DA14027C55C37004E2030 /* LaunchScreen.storyboard */,
 				493DA13E27C55C37004E2030 /* Assets.xcassets */,
 				493DA14327C55C37004E2030 /* Info.plist */,
-				493DA13B27C55C36004E2030 /* NewsTestApp.xcdatamodeld */,
 			);
 			path = NewsTestApp;
 			sourceTree = "<group>";
@@ -214,7 +211,6 @@
 				493DA13327C55C36004E2030 /* AppDelegate.swift in Sources */,
 				4968407B27C5647C00AAD716 /* NewsTableViewCell.swift in Sources */,
 				4933F1A627C56A3200459077 /* NetworkManager.swift in Sources */,
-				493DA13D27C55C36004E2030 /* NewsTestApp.xcdatamodeld in Sources */,
 				493DA14A27C55D59004E2030 /* FavoritesViewController.swift in Sources */,
 				493DA13527C55C36004E2030 /* SceneDelegate.swift in Sources */,
 			);
@@ -455,19 +451,6 @@
 			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		493DA13B27C55C36004E2030 /* NewsTestApp.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				493DA13C27C55C36004E2030 /* NewsTestApp.xcdatamodel */,
-			);
-			currentVersion = 493DA13C27C55C36004E2030 /* NewsTestApp.xcdatamodel */;
-			path = NewsTestApp.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 493DA12727C55C36004E2030 /* Project object */;
 }
