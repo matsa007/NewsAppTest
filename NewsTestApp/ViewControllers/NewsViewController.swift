@@ -9,20 +9,20 @@ import UIKit
 import SafariServices
 import Kingfisher
 
-final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
+final class NewsViewController: UIViewController, UISearchBarDelegate {
     private let defaults = UserDefaults.standard
     @IBOutlet weak var newsTableView: UITableView!
     @IBOutlet var newsSearchBar: UISearchBar!
     static var shared = NewsViewController()
-    var articles: [Article] = []
-    let searchController = UISearchController()
-    var filteredArticles = [Article]()
-    let newsTableViewCell = NewsTableViewCell()
-    let refreshControl = UIRefreshControl()
-    let totaysDate = Date()
-    var paginationCouner = 0
-    var isLoading = false
-    
+    private var articles: [Article] = []
+    private let searchController = UISearchController()
+    private var filteredArticles = [Article]()
+    private let newsTableViewCell = NewsTableViewCell()
+    private let refreshControl = UIRefreshControl()
+    private let totaysDate = Date()
+    private var paginationCouner = 0
+    private var isLoading = false
+    /* массивы данных избранного с сохранением в UserDefaults */
     var favoritesTitle: Array <String> {
         set {
             defaults.set(newValue, forKey: "title")
@@ -61,8 +61,8 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         refreshSetup()
         searchControllerSetup()
     }
-    
-    func searchControllerSetup() {
+    /* настройка поисковой строки */
+    private func searchControllerSetup() {
         let search = searchController
         search.loadViewIfNeeded()
         search.searchResultsUpdater = self
@@ -74,27 +74,8 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         navigationItem.hidesSearchBarWhenScrolling = true
         search.searchBar.delegate = self
     }
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        let searchText = searchBar.text
-        filterForSearchText(searchText: searchText!)
-    }
-    
-    func filterForSearchText(searchText: String) {
-        filteredArticles = articles.filter {
-            article in
-            if searchController.searchBar.text != "" {
-                let searchTextMatchTitle = article.title.lowercased().contains(searchText.lowercased())
-                return searchTextMatchTitle
-            } else {
-                return true
-            }
-        }
-        newsTableView.reloadData()
-    }
-    
-    func refreshSetup() {
+    /* настройка функции Pull-Refresh */
+    private func refreshSetup() {
         if #available(iOS 10.0, *) {
             newsTableView.refreshControl = refreshControl
         } else {
@@ -107,15 +88,16 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: color]
         refreshControl.attributedTitle = NSAttributedString(string: "Updating news ...", attributes: attributes)
     }
-    
-    //    алерт
-    func showError(_ error: Error) {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
+    /* алерт для показа ошибки загрузки данных из сети */
+    private func showError(_ error: Error) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
-    
-    func loadNews(dateForNews: Date) {
+    /* функция загрузки новостей за сегодня, вызывается единожды во viewDidLoad */
+    private func loadNews(dateForNews: Date) {
         DispatchQueue.global(qos: .userInitiated).async {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -136,16 +118,59 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
             }
         }
     }
-    
+    /* функция дозагрузки новостей пагинацией за 7 дней, при попытке догрузить больше - появляется алерт */
+    private func loadMoreData() {
+        if !self.isLoading {
+            self.isLoading = true
+            DispatchQueue.global().async {
+                let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -self.paginationCouner, to: self.totaysDate)
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
+                sleep(1)
+                if self.paginationCouner > 7 {
+                    /* алерт */
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "SORRY", message: "YOU ARE ALLOWED TO SEE NEWS FOR PAST 7 DAYS ONLY ...", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                } else {
+                    /* догрузка данных */
+                    print(dateForNewsString)
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
+                            switch result {
+                            case .success(let articles):
+                                DispatchQueue.main.async {
+                                    self?.articles.append(contentsOf: articles)
+                                    self?.newsTableView.reloadData()
+                                }
+                            case .failure(let error):
+                                DispatchQueue.main.async {
+                                    self?.showError(error)
+                                }
+                            }
+                        }
+                    }
+                }
+                DispatchQueue.main.async {
+                    self.newsTableView.reloadData()
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    // MARK: - IBActions
     @objc private func refreshNewsData(_ sender: Any) {
         loadNews(dateForNews: totaysDate)
         self.newsTableView.reloadData()
         self.refreshControl.endRefreshing()
     }
 }
-
+// MARK: - настройка таблицы
 extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchController.isActive {
             return filteredArticles.count
         } else {
@@ -153,13 +178,14 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
         }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell") as? NewsTableViewCell else { return UITableViewCell() }
         let article = articles[indexPath.row]
         if searchController.isActive {
             let filteredArticles = filteredArticles[indexPath.row]
             cell.newsTitleLabel.text = filteredArticles.title
             cell.newsDescriptionLabel.text = filteredArticles.description
+            /* использование строннего фреймворка Kingfisher для опциональной загрузки изображения и сохранения картинок в кэш */
             let placeholderImage = UIImage(named: "noImage")
             let processor = DownsamplingImageProcessor(size: cell.newsImageView.bounds.size)
             |> RoundCornerImageProcessor(cornerRadius: 20)
@@ -217,7 +243,7 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    internal func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let article = articles[indexPath.row]
         newsTableViewCell.urlBrowserString = article.url
         guard let url = URL(string: article.url) else { return }
@@ -225,54 +251,39 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
         present(browserViewController, animated: true, completion: nil)
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    internal func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         140
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    /* функция, срабатывающая при скролле до определенного места по оси Y - необходимо для пагинации */
+    internal func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         if (offsetY > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100)) && !isLoading {
             paginationCouner += 1
+            /* догрузка */
             loadMoreData()
         }
     }
-    
-    func loadMoreData() {
-        if !self.isLoading {
-            self.isLoading = true
-            DispatchQueue.global().async {
-                let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -self.paginationCouner, to: self.totaysDate)
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-                let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
-                sleep(2)
-                if self.paginationCouner > 7 {
-                    DispatchQueue.main.async {
-                        let alert = UIAlertController(title: "SORRY", message: "YOU ARE ALLOWED TO SEE NEWS FOR PAST 7 DAYS ONLY ...", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                }
-                print(dateForNewsString)
-                NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
-                    switch result {
-                    case .success(let articles):
-                        DispatchQueue.main.async {
-                            self?.articles.append(contentsOf: articles)
-                            self?.newsTableView.reloadData()
-                        }
-                    case .failure(let error):
-                        DispatchQueue.main.async {
-                            self?.showError(error)
-                        }
-                    }
-                }
-                DispatchQueue.main.async {
-                    self.newsTableView.reloadData()
-                    self.isLoading = false
-                }
+}
+
+extension NewsViewController: UISearchResultsUpdating {
+    /* функция передающая на поиск в функцию filterForSearchText текст поисковой строки */
+    internal func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        let searchText = searchBar.text
+        filterForSearchText(searchText: searchText!)
+    }
+    /* функция поиска статей по тайтлу, содержащему символы из поисковой строки */
+    private func filterForSearchText(searchText: String) {
+        filteredArticles = articles.filter {
+            article in
+            if searchController.searchBar.text != "" {
+                let searchTextMatchTitle = article.title.lowercased().contains(searchText.lowercased())
+                return searchTextMatchTitle
+            } else {
+                return true
             }
         }
+        newsTableView.reloadData()
     }
 }
 

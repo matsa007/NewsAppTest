@@ -11,6 +11,7 @@ import SafariServices
 final class FavoritesViewController: UIViewController {
     static var shared = FavoritesViewController()
     @IBOutlet weak var favoritesTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         favoritesTableView.dataSource = self
@@ -21,21 +22,22 @@ final class FavoritesViewController: UIViewController {
         super.viewWillAppear(animated)
         favoritesTableView.reloadData()
     }
-}
-
-extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        NewsViewController.shared.favoritesTitle.count
-    }
-    
-    func convertImageFromData(_ dataImg: Data?) -> UIImage {
+    /* преобразование изображения из типа Data в UIImage */
+    private func convertImageFromData(_ dataImg: Data?) -> UIImage {
         guard let data = dataImg else { return UIImage(named: "noImage")! }
         let decoded = try! PropertyListDecoder().decode(Data.self, from: data)
         let image = UIImage(data: decoded)
         return image ?? UIImage(named: "noImage")!
     }
+}
+
+extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
+    // MARK: - настройка таблицы
+    internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        NewsViewController.shared.favoritesTitle.count
+    }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FavoritesTableViewCell", for: indexPath) as? FavoritesTableViewCell
         DispatchQueue.main.async {
             cell?.favoritesTitleLabel.text = NewsViewController.shared.favoritesTitle[indexPath.row]
@@ -45,15 +47,15 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
         return cell!
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    internal func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         140
     }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+    internal func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         .delete
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    internal func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             favoritesTableView.beginUpdates()
             NewsViewController.shared.favoritesTitle.remove(at: indexPath.row)

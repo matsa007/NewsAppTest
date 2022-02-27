@@ -7,32 +7,14 @@
 
 import UIKit
 
-class NewsTableViewCell: UITableViewCell {
-    @IBOutlet weak var newsImageView: UIImageView!
+final class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsTitleLabel: UILabel!
     @IBOutlet weak var newsDescriptionLabel: UILabel!
-    var urlBrowserString = ""
-    
-    var counter = 1
-    let linkLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isUserInteractionEnabled = true
-        label.backgroundColor = .clear
-        return label
-    }()
-    let likeButton: UIButton = {
-        let button = UIButton(type: .system)
-        let image = UIImage(named: "save")
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isUserInteractionEnabled = true
-        button.setImage(image, for: .normal)
-        button.tintColor = .blue
-        button.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    
+    @IBOutlet weak var newsImageView: UIImageView!
+    private let linkLabel = UILabel()
+    private let likeButton = UIButton(type: .system)
+    public var urlBrowserString = ""
+    private var likeButtonCounter = 1
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -44,40 +26,68 @@ class NewsTableViewCell: UITableViewCell {
         super.prepareForReuse()
         self.imageView?.image = nil
     }
-    
-    
-    func setConstrains() {
-        let linkLabel = linkLabel
-        let descriptionLabel = newsDescriptionLabel
-        let titleLabel = newsTitleLabel
+    /* настройка UI для лейбы с заголовком */
+    private func newsTitleLabelSetup() {
+        let label = newsTitleLabel
+        label?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
+    }
+    /* настройка UI для лейбы с описанием */
+    private func newsDescriptionLabelSetup() {
+        let label = newsDescriptionLabel
+        label?.sizeToFit()
+        label?.lineBreakMode = .byWordWrapping
+        label?.adjustsFontSizeToFitWidth = true
+        label?.textAlignment = .left
+        label?.numberOfLines = 0
+        label?.sizeToFit()
+        label?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 100)
+    }
+    /* настройка UI для imageView */
+    private func newsImageViewSetup() {
         let imageView = newsImageView
-        let button = likeButton
-        descriptionLabel!.sizeToFit()
-        //        descriptionLabel?.lineBreakMode = .byWordWrapping
-        descriptionLabel?.adjustsFontSizeToFitWidth = true
-        descriptionLabel?.textAlignment = .left
-        descriptionLabel?.numberOfLines = 0
-        descriptionLabel?.sizeToFit()
-        descriptionLabel?.addSubview(linkLabel)
-        descriptionLabel?.addSubview(button)
-        titleLabel?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
         imageView?.frame = .init(x: 0, y: 30, width: 100, height: 100)
-        descriptionLabel?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 100)
+    }
+    /* настройка UI для лейбы, которая покрывает подпись "... Show More" */
+    private func linkLabelSetup() {
+        let label = linkLabel
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = true
+        newsDescriptionLabel.addSubview(label)
         NSLayoutConstraint.activate([
-            linkLabel.bottomAnchor.constraint(equalTo: descriptionLabel!.bottomAnchor),
-            linkLabel.trailingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor),
-            linkLabel.leadingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor, constant: -descriptionLabel!.frame.width/1.3),
-            linkLabel.topAnchor.constraint(equalTo: descriptionLabel!.bottomAnchor, constant: -20)
-        ])
-        NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: descriptionLabel!.topAnchor),
-            button.leadingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor, constant: -imageView!.frame.width/2),
-            button.trailingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor),
-            button.bottomAnchor.constraint(equalTo: descriptionLabel!.topAnchor, constant: imageView!.frame.height/2)
+            label.bottomAnchor.constraint(equalTo: newsDescriptionLabel.bottomAnchor),
+            label.trailingAnchor.constraint(equalTo: newsDescriptionLabel.trailingAnchor),
+            label.leadingAnchor.constraint(equalTo: newsDescriptionLabel.trailingAnchor, constant: -newsDescriptionLabel.frame.width/1.3),
+            label.topAnchor.constraint(equalTo: newsDescriptionLabel.bottomAnchor, constant: -20)
         ])
     }
-    
-    func showMoreAdd() {
+    /* настройка UI для кнопки добавления в избранное*/
+    private func likeButtonSetup() {
+        let button = likeButton
+        let imageView = newsImageView
+        let image = UIImage(named: "save")
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isUserInteractionEnabled = true
+        button.setImage(image, for: .normal)
+        button.tintColor = .blue
+        button.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)
+        newsDescriptionLabel.addSubview(button)
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: newsDescriptionLabel.topAnchor),
+            button.leadingAnchor.constraint(equalTo: newsDescriptionLabel.trailingAnchor, constant: -imageView!.frame.width/2),
+            button.trailingAnchor.constraint(equalTo: newsDescriptionLabel.trailingAnchor),
+            button.bottomAnchor.constraint(equalTo: newsDescriptionLabel.topAnchor, constant: imageView!.frame.height/2)
+        ])
+    }
+    /* настройка UI элементов ячейки во вкладке News*/
+    private func setConstrains() {
+        newsTitleLabelSetup()
+        newsDescriptionLabelSetup()
+        newsImageViewSetup()
+        likeButtonSetup()
+        linkLabelSetup()
+    }
+    /* добавление подписи "... Read More" (функция лежит в Utility)в конец описания при условии количества строк до 3х */
+    private func showMoreAdd() {
         let label = newsDescriptionLabel
         let linkLabel = linkLabel
         linkLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped)))
@@ -89,16 +99,28 @@ class NewsTableViewCell: UITableViewCell {
             }
         }
     }
-    
+    /* преобразование изображения из типа UIImage в Data */
+    private func convertImageToData(_ img: UIImage) -> Data {
+        guard let data = img.jpegData(compressionQuality: 0.5) else { return UIImage(named: "noImage")!.jpegData(compressionQuality: 0.5)!}
+        let encoded = try! PropertyListEncoder().encode(data)
+        return encoded
+    }
+}
+
+extension NewsTableViewCell {
+    //    MARK: - IBActions
+    /* функция, вызываемая при нажатии на кнопку добавления в избранное */
     @objc func addToFavoritesTapped() {
         let button = likeButton
-        counter += 1
-        if counter%2 == 0 {
+        likeButtonCounter += 1
+        if likeButtonCounter%2 == 0 {
+            /* добавление ячейки в избранное и перекрашивание кнопки */
             NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "noImage"))!))
             NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
             NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
             button.tintColor = .red
         } else {
+            /* удаление ячейки из избранного и перекрашивание кнопки */
             let index = NewsViewController.shared.favoritesTitle.firstIndex(of: "\(newsTitleLabel.text!)")
             NewsViewController.shared.favoritesTitle.remove(at: index!)
             NewsViewController.shared.favoritesImage.remove(at: index!)
@@ -106,19 +128,12 @@ class NewsTableViewCell: UITableViewCell {
             button.tintColor = .blue
         }
     }
-    
-    func convertImageToData(_ img: UIImage) -> Data {
-        guard let data = img.jpegData(compressionQuality: 0.5) else { return UIImage(named: "noImage")!.jpegData(compressionQuality: 0.5)!}
-        let encoded = try! PropertyListEncoder().encode(data)
-        return encoded
-    }
-    
+    /* функция, вызываемая при регистрации Tap жеста в обоасти подписи "... Read More" */
     @objc func tapGestureTapped() {
         print("GESTURE TAPPED")
-        print(newsTitleLabel.text ?? "No text")
         newsDescriptionLabel.lineBreakMode = .byWordWrapping
         newsDescriptionLabel.textAlignment = .left
+        /* изменение размера лейбы с описанием */
         newsDescriptionLabel.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 150)
-        print("NEW NUMBER OF LINES = \(newsDescriptionLabel.numberOfLines)")
     }
 }

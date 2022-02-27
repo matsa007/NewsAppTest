@@ -7,18 +7,17 @@
 
 import UIKit
 
-class FavoritesTableViewCell: UITableViewCell {
+final class FavoritesTableViewCell: UITableViewCell {
     @IBOutlet weak var favoritesTitleLabel: UILabel!
     @IBOutlet weak var favoritesSubtitleLabel: UILabel!
     @IBOutlet weak var favoritesImageView: UIImageView!
-    
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         setConstraints()
     }
-    
-    func setConstraints() {
+    /* настройка UI элементов ячейки во вкладке Favorites*/
+    private func setConstraints() {
         let title = favoritesTitleLabel
         let subtitle = favoritesSubtitleLabel
         let imageView = favoritesImageView

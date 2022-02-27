@@ -7,13 +7,13 @@
 
 import Foundation
 
-class NetworkManager {
+final class NetworkManager {
     static var shared = NetworkManager()
-//    функция загрузки и декодирования JSON
-    func loadDataByApi(date: String, completionHandler: @escaping (Swift.Result<[Article], Error>) -> Void ) {
-        let apiStringUrl = "https://newsapi.org/v2/everything?q=apple&from=\(date)&to=\(date)&sortBy=popularity&apiKey=adf5882279984198ac2a9542ac6eb879"
+    /* функция загрузки и декодирования JSON */
+    public func loadDataByApi(date: String, completionHandler: @escaping (Swift.Result<[Article], Error>) -> Void ) {
+        /* в url подставляется дата новостей, которую мы передаем на вход функции уже стрингом */
+        let apiStringUrl = "https://newsapi.org/v2/everything?q=apple&from=\(date)&to=\(date)&sortBy=popularity&apiKey=fd1573ac039c49a591c1885212a94d9d"
         guard let url = URL(string: apiStringUrl) else { return }
- 
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else {
                 print(String(describing: error))

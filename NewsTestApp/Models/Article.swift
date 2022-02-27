@@ -6,13 +6,13 @@
 //
 
 import Foundation
-
+/* корневые ключи JSON */
 struct Result: Codable {
     let status: String
     let totalResults: Int
     let articles: [Article]
 }
-
+/* значения ключа articles */
 struct Article: Codable {
     let title: String
     let description: String
