@@ -10,8 +10,6 @@ import SafariServices
 import Kingfisher
 
 final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
-    
-    
     private let defaults = UserDefaults.standard
     @IBOutlet weak var newsTableView: UITableView!
     @IBOutlet var newsSearchBar: UISearchBar!
@@ -23,8 +21,6 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     let refreshControl = UIRefreshControl()
     let totaysDate = Date()
     var paginationCouner = -2
-//    let totaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
-    
     
     var favoritesTitle: Array <String> {
         set {
@@ -56,13 +52,6 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         }
     }
     
-    var searchBarText: String? {
-        didSet {
-            print(searchBarText!)
-            
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         newsTableView.dataSource = self
@@ -70,7 +59,6 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         loadNews(dateForNews: totaysDate)
         refreshSetup()
         searchControllerSetup()
-        
     }
     
     func searchControllerSetup() {
@@ -167,7 +155,6 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell") as? NewsTableViewCell else { return UITableViewCell() }
         let article = articles[indexPath.row]
-        
         if searchController.isActive {
             let filteredArticles = filteredArticles[indexPath.row]
             cell.newsTitleLabel.text = filteredArticles.title
@@ -197,7 +184,6 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
                 cell.newsImageView.image = placeholderImage
             }
             tableView.reloadRows(at: [indexPath], with: .automatic)
-            
         } else {
             cell.newsTitleLabel.text = article.title
             cell.newsDescriptionLabel.text = article.description
@@ -242,11 +228,6 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
         200
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchBarText = searchText
-    }
-    
-
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.paginationCouner += 1
@@ -272,13 +253,9 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
                         }
                     }
                 }
-                print("FETCH MORE DATA")
-                print("pagination counter \(self.paginationCouner)")
             }
         }
-
     }
-    
 }
 
 

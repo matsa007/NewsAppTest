@@ -54,10 +54,8 @@ class NewsTableViewCell: UITableViewCell {
         let button = likeButton
         descriptionLabel!.sizeToFit()
         //        descriptionLabel?.lineBreakMode = .byWordWrapping
-        
         descriptionLabel?.adjustsFontSizeToFitWidth = true
         descriptionLabel?.textAlignment = .left
-//        descriptionLabel?.lineBreakMode = .byWordWrapping
         descriptionLabel?.numberOfLines = 0
         descriptionLabel?.sizeToFit()
         descriptionLabel?.addSubview(linkLabel)
@@ -72,15 +70,12 @@ class NewsTableViewCell: UITableViewCell {
             linkLabel.leadingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor, constant: -descriptionLabel!.frame.width/1.3),
             linkLabel.topAnchor.constraint(equalTo: descriptionLabel!.bottomAnchor, constant: -20)
         ])
-       
-        
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: descriptionLabel!.topAnchor),
             button.leadingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor, constant: -imageView!.frame.width/2),
             button.trailingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor),
             button.bottomAnchor.constraint(equalTo: descriptionLabel!.topAnchor, constant: imageView!.frame.height/2)
         ])
-        
     }
     
     func showMoreAdd() {
@@ -126,6 +121,5 @@ class NewsTableViewCell: UITableViewCell {
         newsDescriptionLabel.textAlignment = .left
         newsDescriptionLabel.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 150)
         print("NEW NUMBER OF LINES = \(newsDescriptionLabel.numberOfLines)")
-        
     }
 }
