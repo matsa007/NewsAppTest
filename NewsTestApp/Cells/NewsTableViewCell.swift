@@ -26,7 +26,7 @@ class NewsTableViewCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isUserInteractionEnabled = true
         button.setImage(image, for: .normal)
-        button.tintColor = .white
+        button.tintColor = .blue
         button.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)
         return button
     }()
@@ -56,7 +56,7 @@ class NewsTableViewCell: UITableViewCell {
         
         descriptionLabel?.adjustsFontSizeToFitWidth = true
         descriptionLabel?.textAlignment = .left
-        descriptionLabel?.lineBreakMode = .byWordWrapping
+//        descriptionLabel?.lineBreakMode = .byWordWrapping
         descriptionLabel?.numberOfLines = 0
         descriptionLabel?.sizeToFit()
         descriptionLabel?.addSubview(linkLabel)
@@ -64,7 +64,7 @@ class NewsTableViewCell: UITableViewCell {
         
         titleLabel?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
         imageView?.frame = .init(x: 0, y: 30, width: 100, height: 100)
-        descriptionLabel?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 150), height: 100)
+        descriptionLabel?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 100)
         NSLayoutConstraint.activate([
             linkLabel.bottomAnchor.constraint(equalTo: descriptionLabel!.bottomAnchor),
             linkLabel.trailingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor),
@@ -99,7 +99,7 @@ class NewsTableViewCell: UITableViewCell {
         let button = likeButton
         counter = counter + 1
         if counter%2 == 0 {
-            NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "EUR"))!))
+            NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "noImage"))!))
             NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
             NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
             button.tintColor = .red
@@ -108,28 +108,22 @@ class NewsTableViewCell: UITableViewCell {
             NewsViewController.shared.favoritesTitle.remove(at: index!)
             NewsViewController.shared.favoritesImage.remove(at: index!)
             NewsViewController.shared.favoritesSubtitle.remove(at: index!)
-            button.tintColor = .white
+            button.tintColor = .blue
         }
     }
     
     func convertImageToData(_ img: UIImage) -> Data {
-        guard let data = img.jpegData(compressionQuality: 0.5) else { return UIImage(named: "EUR")!.jpegData(compressionQuality: 0.5)!}
+        guard let data = img.jpegData(compressionQuality: 0.5) else { return UIImage(named: "noImage")!.jpegData(compressionQuality: 0.5)!}
         let encoded = try! PropertyListEncoder().encode(data)
         return encoded
     }
     
     @objc func tapGestureTapped() {
         print("GESTURE TAPPED")
-//        NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "EUR"))!))
-//        NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
-//        NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
-        
-        newsDescriptionLabel.backgroundColor = .green
         print(newsTitleLabel.text ?? "No text")
-                newsDescriptionLabel.lineBreakMode = .byWordWrapping
-//        newsDescriptionLabel.numberOfLines -= 1
-        newsDescriptionLabel.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 150)
+        newsDescriptionLabel.lineBreakMode = .byWordWrapping
         newsDescriptionLabel.textAlignment = .left
+        newsDescriptionLabel.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 150)
         print("NEW NUMBER OF LINES = \(newsDescriptionLabel.numberOfLines)")
         
     }

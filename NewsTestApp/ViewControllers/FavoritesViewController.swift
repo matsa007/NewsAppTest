@@ -30,10 +30,10 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func convertImageFromData(_ dataImg: Data?) -> UIImage {
-        guard let data = dataImg else { return UIImage(named: "EUR")! }
+        guard let data = dataImg else { return UIImage(named: "noImage")! }
         let decoded = try! PropertyListDecoder().decode(Data.self, from: data)
         let image = UIImage(data: decoded)
-        return image ?? UIImage(named: "EUR")!
+        return image ?? UIImage(named: "noImage")!
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

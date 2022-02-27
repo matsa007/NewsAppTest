@@ -133,7 +133,7 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UISear
         let article = articles[indexPath.row]
         cell.newsTitleLabel.text = article.title
         cell.newsDescriptionLabel.text = article.description
-        let placeholderImage = UIImage(named: "EUR")
+        let placeholderImage = UIImage(named: "noImage")
         let processor = DownsamplingImageProcessor(size: cell.newsImageView.bounds.size)
         |> RoundCornerImageProcessor(cornerRadius: 20)
         cell.newsImageView.kf.indicatorType = .activity
