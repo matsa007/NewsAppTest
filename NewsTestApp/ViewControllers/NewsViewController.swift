@@ -231,47 +231,45 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-                let contentHeight = scrollView.contentSize.height
-
-                if (offsetY > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100)) && !isLoading {
-                    paginationCouner += 1
-                    loadMoreData()
-                }
+        if (offsetY > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100)) && !isLoading {
+            paginationCouner += 1
+            loadMoreData()
+        }
     }
     
     func loadMoreData() {
-            if !self.isLoading {
-                self.isLoading = true
-                DispatchQueue.global().async {
-                    let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -self.paginationCouner, to: self.totaysDate)
-                                        let dateFormatter = DateFormatter()
-                                        dateFormatter.dateFormat = "yyyy-MM-dd"
-                                        let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
-                    sleep(2)
-                    if self.paginationCouner > 7 {
-                        return
+        if !self.isLoading {
+            self.isLoading = true
+            DispatchQueue.global().async {
+                let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -self.paginationCouner, to: self.totaysDate)
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
+                sleep(2)
+                if self.paginationCouner > 7 {
+                    return
+                }
+                print(dateForNewsString)
+                NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
+                    switch result {
+                    case .success(let articles):
+                        DispatchQueue.main.async {
+                            self?.articles.append(contentsOf: articles)
+                            self?.newsTableView.reloadData()
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            self?.showError(error)
+                        }
                     }
-                    print(dateForNewsString)
-                    NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
-                                           switch result {
-                                           case .success(let articles):
-                                               DispatchQueue.main.async {
-                                                   self?.articles.append(contentsOf: articles)
-                                                   self?.newsTableView.reloadData()
-                                               }
-                                           case .failure(let error):
-                                               DispatchQueue.main.async {
-                                                   self?.showError(error)
-                                               }
-                                           }
-                                       }
-                    DispatchQueue.main.async {
-                        self.newsTableView.reloadData()
-                        self.isLoading = false
-                    }
+                }
+                DispatchQueue.main.async {
+                    self.newsTableView.reloadData()
+                    self.isLoading = false
                 }
             }
         }
+    }
 }
 
 
