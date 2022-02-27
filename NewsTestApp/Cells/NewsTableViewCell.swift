@@ -12,6 +12,7 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsTitleLabel: UILabel!
     @IBOutlet weak var newsDescriptionLabel: UILabel!
     var urlBrowserString = ""
+    
     var counter = 1
     let linkLabel: UILabel = {
         let label = UILabel()

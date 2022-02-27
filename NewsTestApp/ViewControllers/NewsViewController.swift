@@ -21,6 +21,9 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     var filteredArticles = [Article]()
     let newsTableViewCell = NewsTableViewCell()
     let refreshControl = UIRefreshControl()
+    let totaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
+    
+    
     var favoritesTitle: Array <String> {
         set {
             defaults.set(newValue, forKey: "title")
@@ -45,17 +48,16 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         set {
             defaults.set(newValue, forKey: "img")
         }
-
+        
         get {
             defaults.object(forKey: "img") as? [Data] ?? []
         }
     }
-
+    
     var searchBarText: String? {
         didSet {
             print(searchBarText!)
-
-            //            reloadFilterData()
+            
         }
     }
     
@@ -64,12 +66,9 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         newsTableView.dataSource = self
         newsTableView.delegate = self
         loadNews()
-//        navigationItem.titleView = newsSearchBar
-//        newsSearchBar.delegate = self
         refreshSetup()
         searchControllerSetup()
         
-
     }
     
     func searchControllerSetup() {
@@ -95,14 +94,13 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         filteredArticles = articles.filter {
             article in
             if searchController.searchBar.text != "" {
-                let searchTextMatch = article.title.lowercased().contains(searchText.lowercased())
-                return searchTextMatch
+                let searchTextMatchTitle = article.title.lowercased().contains(searchText.lowercased())
+                return searchTextMatchTitle
             } else {
-                return false
+                return true
             }
         }
         newsTableView.reloadData()
-        
     }
     
     func refreshSetup() {
@@ -128,7 +126,16 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     
     func loadNews() {
         DispatchQueue.global(qos: .userInitiated).async {
-            NetworkManager.shared.loadDataByApi(date: Date()) { [weak self] result in
+//            let dat = self.totaysDate
+//            let yest = dat?.formatted(FormatStyle)
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "YYYY-MM-DD"
+//            let todayDateString = dateFormatter.string(from: self.totaysDate!)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let resultString = dateFormatter.string(from: self.totaysDate!)
+            print("TODAY FOR LOAD === \(resultString)")
+            NetworkManager.shared.loadDataByApi(date: resultString) { [weak self] result in
                 switch result {
                 case .success(let articles):
                     DispatchQueue.main.async {
@@ -223,10 +230,7 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate {
                 cell.newsImageView.image = placeholderImage
             }
             tableView.reloadRows(at: [indexPath], with: .automatic)
-            
         }
-        
- 
         return cell
     }
     

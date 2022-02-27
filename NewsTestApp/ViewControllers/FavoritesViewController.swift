@@ -25,8 +25,7 @@ final class FavoritesViewController: UIViewController {
 
 extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(NewsViewController.shared.favoritesTitle.count)
-        return NewsViewController.shared.favoritesTitle.count
+        NewsViewController.shared.favoritesTitle.count
     }
     
     func convertImageFromData(_ dataImg: Data?) -> UIImage {
@@ -43,7 +42,6 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
             cell?.favoritesSubtitleLabel.text = NewsViewController.shared.favoritesSubtitle[indexPath.row]
             cell?.favoritesImageView.image = self.convertImageFromData(NewsViewController.shared.favoritesImage[indexPath.row])
         }
-        
         return cell!
     }
     
