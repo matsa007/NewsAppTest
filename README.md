@@ -24,6 +24,10 @@ Display news with using API [News Api](https://newsapi.org).
 ## Requirements
 - iOS 12.0+ / macOS 10.14+ / tvOS 12.0+ / watchOS 5.0+
 
+# Tech
+
+- All functions in code a _marked_ with it's description
+
 # Installation
 
 Application requires iOS 12+ to run.
