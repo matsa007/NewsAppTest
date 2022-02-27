@@ -9,7 +9,9 @@ import UIKit
 import SafariServices
 import Kingfisher
 
-final class NewsViewController: UIViewController {
+final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
+    
+    
     private let defaults = UserDefaults.standard
     @IBOutlet weak var newsTableView: UITableView!
     @IBOutlet var newsSearchBar: UISearchBar!
@@ -65,17 +67,43 @@ final class NewsViewController: UIViewController {
 //        navigationItem.titleView = newsSearchBar
 //        newsSearchBar.delegate = self
         refreshSetup()
-//        searchControllerSetup()
+        searchControllerSetup()
+        
 
     }
     
-//    func searchControllerSetup() {
-//        let search = searchController
-//        search.loadViewIfNeeded()
-//        search.searchResultsUpdater = self
-//
-//
-//    }
+    func searchControllerSetup() {
+        let search = searchController
+        search.loadViewIfNeeded()
+        search.searchResultsUpdater = self
+        search.obscuresBackgroundDuringPresentation = false
+        search.searchBar.enablesReturnKeyAutomatically = false
+        search.searchBar.returnKeyType = UIReturnKeyType.done
+        definesPresentationContext = true
+        navigationItem.searchController = search
+        navigationItem.hidesSearchBarWhenScrolling = true
+        search.searchBar.delegate = self
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        let searchText = searchBar.text
+        filterForSearchText(searchText: searchText!)
+    }
+    
+    func filterForSearchText(searchText: String) {
+        filteredArticles = articles.filter {
+            article in
+            if searchController.searchBar.text != "" {
+                let searchTextMatch = article.title.lowercased().contains(searchText.lowercased())
+                return searchTextMatch
+            } else {
+                return false
+            }
+        }
+        newsTableView.reloadData()
+        
+    }
     
     func refreshSetup() {
         if #available(iOS 10.0, *) {
@@ -123,41 +151,81 @@ final class NewsViewController: UIViewController {
     }
 }
 
-extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+extension NewsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        articles.count
+        if searchController.isActive {
+            return filteredArticles.count
+        } else {
+            return articles.count
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell") as? NewsTableViewCell else { return UITableViewCell() }
         let article = articles[indexPath.row]
-        cell.newsTitleLabel.text = article.title
-        cell.newsDescriptionLabel.text = article.description
-        let placeholderImage = UIImage(named: "noImage")
-        let processor = DownsamplingImageProcessor(size: cell.newsImageView.bounds.size)
-        |> RoundCornerImageProcessor(cornerRadius: 20)
-        cell.newsImageView.kf.indicatorType = .activity
-        if let urlToImage = article.urlToImage, let url = URL(string: urlToImage) {
-            cell.newsImageView.kf.setImage(
-                with: url,
-                placeholder: placeholderImage,
-                options: [
-                    .processor(processor),
-                    .loadDiskFileSynchronously,
-                    .cacheOriginalImage,
-                    .transition(.fade(0.25)),
-                ],
-                progressBlock: { receivedSize, totalSize in
-                    // Progress updated
-                },
-                completionHandler: { result in
-                    // Done
-                }
-            )
+        
+        if searchController.isActive {
+            let filteredArticles = filteredArticles[indexPath.row]
+            cell.newsTitleLabel.text = filteredArticles.title
+            cell.newsDescriptionLabel.text = filteredArticles.description
+            let placeholderImage = UIImage(named: "noImage")
+            let processor = DownsamplingImageProcessor(size: cell.newsImageView.bounds.size)
+            |> RoundCornerImageProcessor(cornerRadius: 20)
+            cell.newsImageView.kf.indicatorType = .activity
+            if let urlToImage = filteredArticles.urlToImage, let url = URL(string: urlToImage) {
+                cell.newsImageView.kf.setImage(
+                    with: url,
+                    placeholder: placeholderImage,
+                    options: [
+                        .processor(processor),
+                        .loadDiskFileSynchronously,
+                        .cacheOriginalImage,
+                        .transition(.fade(0.25)),
+                    ],
+                    progressBlock: { receivedSize, totalSize in
+                        // Progress updated
+                    },
+                    completionHandler: { result in
+                        // Done
+                    }
+                )
+            } else {
+                cell.newsImageView.image = placeholderImage
+            }
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            
         } else {
-            cell.newsImageView.image = placeholderImage
+            cell.newsTitleLabel.text = article.title
+            cell.newsDescriptionLabel.text = article.description
+            let placeholderImage = UIImage(named: "noImage")
+            let processor = DownsamplingImageProcessor(size: cell.newsImageView.bounds.size)
+            |> RoundCornerImageProcessor(cornerRadius: 20)
+            cell.newsImageView.kf.indicatorType = .activity
+            if let urlToImage = article.urlToImage, let url = URL(string: urlToImage) {
+                cell.newsImageView.kf.setImage(
+                    with: url,
+                    placeholder: placeholderImage,
+                    options: [
+                        .processor(processor),
+                        .loadDiskFileSynchronously,
+                        .cacheOriginalImage,
+                        .transition(.fade(0.25)),
+                    ],
+                    progressBlock: { receivedSize, totalSize in
+                        // Progress updated
+                    },
+                    completionHandler: { result in
+                        // Done
+                    }
+                )
+            } else {
+                cell.newsImageView.image = placeholderImage
+            }
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            
         }
-        tableView.reloadRows(at: [indexPath], with: .automatic)
+        
  
         return cell
     }
