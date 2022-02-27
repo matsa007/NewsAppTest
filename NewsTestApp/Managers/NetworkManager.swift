@@ -13,6 +13,7 @@ class NetworkManager {
     func loadDataByApi(date: String, completionHandler: @escaping (Swift.Result<[Article], Error>) -> Void ) {
         let apiStringUrl = "https://newsapi.org/v2/everything?q=apple&from=\(date)&to=\(date)&sortBy=popularity&apiKey=adf5882279984198ac2a9542ac6eb879"
         guard let url = URL(string: apiStringUrl) else { return }
+ 
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else {
                 print(String(describing: error))

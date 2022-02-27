@@ -20,7 +20,8 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     let newsTableViewCell = NewsTableViewCell()
     let refreshControl = UIRefreshControl()
     let totaysDate = Date()
-    var paginationCouner = -2
+    var paginationCouner = 0
+    var isLoading = false
     
     var favoritesTitle: Array <String> {
         set {
@@ -229,33 +230,48 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.paginationCouner += 1
-            let position = scrollView.contentOffset.y
-            if position > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100) {
-                DispatchQueue.global(qos: .userInitiated).async {
-                    let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -1, to: self.totaysDate)
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
-                    print("DATE FOR NEWS FOR LOAD === \(dateForNewsString)")
+        let offsetY = scrollView.contentOffset.y
+                let contentHeight = scrollView.contentSize.height
+
+                if (offsetY > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100)) && !isLoading {
+                    paginationCouner += 1
+                    loadMoreData()
+                }
+    }
+    
+    func loadMoreData() {
+            if !self.isLoading {
+                self.isLoading = true
+                DispatchQueue.global().async {
+                    let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -self.paginationCouner, to: self.totaysDate)
+                                        let dateFormatter = DateFormatter()
+                                        dateFormatter.dateFormat = "yyyy-MM-dd"
+                                        let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
+                    sleep(2)
+                    if self.paginationCouner > 7 {
+                        return
+                    }
+                    print(dateForNewsString)
                     NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
-                        switch result {
-                        case .success(let articles):
-                            DispatchQueue.main.async {
-                                self?.articles.append(contentsOf: articles)
-                                self?.newsTableView.reloadData()
-                            }
-                        case .failure(let error):
-                            DispatchQueue.main.async {
-                                self?.showError(error)
-                            }
-                        }
+                                           switch result {
+                                           case .success(let articles):
+                                               DispatchQueue.main.async {
+                                                   self?.articles.append(contentsOf: articles)
+                                                   self?.newsTableView.reloadData()
+                                               }
+                                           case .failure(let error):
+                                               DispatchQueue.main.async {
+                                                   self?.showError(error)
+                                               }
+                                           }
+                                       }
+                    DispatchQueue.main.async {
+                        self.newsTableView.reloadData()
+                        self.isLoading = false
                     }
                 }
             }
         }
-    }
 }
 
 
