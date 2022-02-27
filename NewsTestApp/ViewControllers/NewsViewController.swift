@@ -21,7 +21,8 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     var filteredArticles = [Article]()
     let newsTableViewCell = NewsTableViewCell()
     let refreshControl = UIRefreshControl()
-    let totaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
+    let totaysDate = Date()
+//    let totaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
     
     
     var favoritesTitle: Array <String> {
@@ -65,7 +66,7 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         super.viewDidLoad()
         newsTableView.dataSource = self
         newsTableView.delegate = self
-        loadNews()
+        loadNews(dateForNews: totaysDate)
         refreshSetup()
         searchControllerSetup()
         
@@ -124,7 +125,7 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
         present(alert, animated: true, completion: nil)
     }
     
-    func loadNews() {
+    func loadNews(dateForNews: Date) {
         DispatchQueue.global(qos: .userInitiated).async {
 //            let dat = self.totaysDate
 //            let yest = dat?.formatted(FormatStyle)
@@ -133,7 +134,7 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
 //            let todayDateString = dateFormatter.string(from: self.totaysDate!)
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
-            let resultString = dateFormatter.string(from: self.totaysDate!)
+            let resultString = dateFormatter.string(from: dateForNews)
             print("TODAY FOR LOAD === \(resultString)")
             NetworkManager.shared.loadDataByApi(date: resultString) { [weak self] result in
                 switch result {
@@ -152,7 +153,7 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     }
     
     @objc private func refreshNewsData(_ sender: Any) {
-        loadNews()
+        loadNews(dateForNews: totaysDate)
         self.newsTableView.reloadData()
         self.refreshControl.endRefreshing()
     }
