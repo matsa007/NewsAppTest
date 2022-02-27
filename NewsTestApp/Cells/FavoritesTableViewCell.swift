@@ -22,8 +22,8 @@ class FavoritesTableViewCell: UITableViewCell {
         let title = favoritesTitleLabel
         let subtitle = favoritesSubtitleLabel
         let imageView = favoritesImageView
-        imageView?.frame = .init(x: 0, y: 0, width: 200, height: 200 )
-        title?.frame = .init(x: 200, y: 0, width: superview!.frame.width, height: 100)
-        subtitle?.frame = .init(x: 200, y: 100, width: superview!.frame.width, height: 100)
+        imageView?.frame = .init(x: 0, y: 30, width: 100, height: 100)
+        title?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
+        subtitle?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 100)
     }
 }

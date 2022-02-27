@@ -47,5 +47,20 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         200
-    }   
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            favoritesTableView.beginUpdates()
+            NewsViewController.shared.favoritesTitle.remove(at: indexPath.row)
+            NewsViewController.shared.favoritesImage.remove(at: indexPath.row)
+            NewsViewController.shared.favoritesSubtitle.remove(at: indexPath.row)
+            favoritesTableView.deleteRows(at: [indexPath], with: .fade)
+            favoritesTableView.endUpdates()
+        }
+    }
 }
