@@ -247,7 +247,11 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
                 let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
                 sleep(2)
                 if self.paginationCouner > 7 {
-                    return
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "SORRY", message: "YOU ARE ALLOWED TO SEE NEWS FOR PAST 7 DAYS ONLY ...", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                    }
                 }
                 print(dateForNewsString)
                 NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
