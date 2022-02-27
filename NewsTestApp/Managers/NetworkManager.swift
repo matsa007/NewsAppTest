@@ -24,7 +24,7 @@ class NetworkManager {
             }
             do {
                 let results = try JSONDecoder().decode(Result.self, from: data)
-                completionHandler(.success(results.articles))                
+                completionHandler(.success(results.articles))
             } catch {
                 completionHandler(.failure(error))
                 print(error.localizedDescription)

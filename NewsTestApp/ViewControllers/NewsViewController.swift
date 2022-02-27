@@ -22,6 +22,7 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     let newsTableViewCell = NewsTableViewCell()
     let refreshControl = UIRefreshControl()
     let totaysDate = Date()
+    var paginationCouner = -2
 //    let totaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
     
     
@@ -127,16 +128,11 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     
     func loadNews(dateForNews: Date) {
         DispatchQueue.global(qos: .userInitiated).async {
-//            let dat = self.totaysDate
-//            let yest = dat?.formatted(FormatStyle)
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "YYYY-MM-DD"
-//            let todayDateString = dateFormatter.string(from: self.totaysDate!)
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
-            let resultString = dateFormatter.string(from: dateForNews)
-            print("TODAY FOR LOAD === \(resultString)")
-            NetworkManager.shared.loadDataByApi(date: resultString) { [weak self] result in
+            let dateForNewsString = dateFormatter.string(from: dateForNews)
+            print("DATE FOR NEWS FOR LOAD === \(dateForNewsString)")
+            NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
                 switch result {
                 case .success(let articles):
                     DispatchQueue.main.async {
@@ -159,14 +155,13 @@ final class NewsViewController: UIViewController, UISearchBarDelegate, UISearchR
     }
 }
 
-extension NewsViewController: UITableViewDataSource, UITableViewDelegate {
+extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchController.isActive {
             return filteredArticles.count
         } else {
             return articles.count
         }
-        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -250,5 +245,41 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchBarText = searchText
     }
+    
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.paginationCouner += 1
+            let position = scrollView.contentOffset.y
+            if position > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100) {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let plus24HoursDate = Calendar.current.date(byAdding: .day, value: -1, to: self.totaysDate)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    let dateForNewsString = dateFormatter.string(from: plus24HoursDate ?? Date())
+                    print("DATE FOR NEWS FOR LOAD === \(dateForNewsString)")
+                    NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
+                        switch result {
+                        case .success(let articles):
+                            DispatchQueue.main.async {
+                                self?.articles.append(contentsOf: articles)
+                                self?.newsTableView.reloadData()
+                            }
+                        case .failure(let error):
+                            DispatchQueue.main.async {
+                                self?.showError(error)
+                            }
+                        }
+                    }
+                }
+                print("FETCH MORE DATA")
+                print("pagination counter \(self.paginationCouner)")
+            }
+        }
+
+    }
+    
 }
+
+
 
