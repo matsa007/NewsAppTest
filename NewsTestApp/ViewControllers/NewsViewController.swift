@@ -16,6 +16,7 @@ final class NewsViewController: UIViewController {
     static var shared = NewsViewController()
     var articles: [Article] = []
     let newsTableViewCell = NewsTableViewCell()
+    let refreshControl = UIRefreshControl()
     var favoritesTitle: Array <String> {
         set {
             defaults.set(newValue, forKey: "title")
@@ -45,12 +46,7 @@ final class NewsViewController: UIViewController {
             defaults.object(forKey: "img") as? [Data] ?? []
         }
     }
-    
-    
-    
-   
-    
-    
+
     var searchBarText: String? {
         didSet {
             print(searchBarText!)
@@ -70,7 +66,44 @@ final class NewsViewController: UIViewController {
         loadNews()
         navigationItem.titleView = newsSearchBar
         newsSearchBar.delegate = self
+        refreshSetup()
+        
+
     }
+    
+    func refreshSetup() {
+        if #available(iOS 10.0, *) {
+            newsTableView.refreshControl = refreshControl
+        } else {
+            newsTableView.addSubview(refreshControl)
+        }
+        refreshControl.addTarget(self, action: #selector(refreshNewsData(_:)), for: .valueChanged)
+        let font = UIFont.systemFont(ofSize: 20)
+        let color = UIColor(red:23/255, green:56/255, blue:135/255, alpha:1.0)
+        refreshControl.tintColor = color
+        let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: color]
+        refreshControl.attributedTitle = NSAttributedString(string: "Updating news ...", attributes: attributes)
+    }
+    
+    @objc private func refreshNewsData(_ sender: Any) {
+        loadNews()
+        self.newsTableView.reloadData()
+        self.refreshControl.endRefreshing()
+    }
+    
+    func reloadFilterData(shouldReloadTableView: Bool = true) {
+        if let filterText = searchBarText {
+//            filterDataSource(searchBarText)
+        } else {
+//            resetDataSource()
+        }
+        
+        if shouldReloadTableView {
+            newsTableView.reloadData()
+        }
+    }
+    
+    
     //    алерт
     func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
@@ -132,6 +165,7 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UISear
             cell.newsImageView.image = placeholderImage
         }
         tableView.reloadRows(at: [indexPath], with: .automatic)
+ 
         return cell
     }
     
