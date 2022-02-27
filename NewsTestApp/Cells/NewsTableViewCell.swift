@@ -12,6 +12,7 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsTitleLabel: UILabel!
     @IBOutlet weak var newsDescriptionLabel: UILabel!
     var urlBrowserString = ""
+    var counter = 1
     let linkLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -19,15 +20,15 @@ class NewsTableViewCell: UITableViewCell {
         label.backgroundColor = .clear
         return label
     }()
-    let likeButton: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isUserInteractionEnabled = true
-        label.backgroundColor = .red
-        label.text = "⭐︎"
-        label.font = .systemFont(ofSize: 28)
-        label.tintColor = .white
-        return label
+    let likeButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "save")
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isUserInteractionEnabled = true
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.addTarget(self, action: #selector(addToFavoritesTapped), for: .touchUpInside)
+        return button
     }()
     
     
@@ -59,7 +60,7 @@ class NewsTableViewCell: UITableViewCell {
         descriptionLabel?.numberOfLines = 0
         descriptionLabel?.sizeToFit()
         descriptionLabel?.addSubview(linkLabel)
-        imageView?.addSubview(button)
+        descriptionLabel?.addSubview(button)
         
         titleLabel?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
         imageView?.frame = .init(x: 0, y: 30, width: 100, height: 100)
@@ -73,10 +74,10 @@ class NewsTableViewCell: UITableViewCell {
        
         
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: imageView!.bottomAnchor, constant: -imageView!.frame.height/2),
-            button.leadingAnchor.constraint(equalTo: imageView!.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: imageView!.leadingAnchor, constant: imageView!.frame.width/2),
-            button.bottomAnchor.constraint(equalTo: imageView!.bottomAnchor)
+            button.topAnchor.constraint(equalTo: descriptionLabel!.topAnchor),
+            button.leadingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor, constant: -imageView!.frame.width/2),
+            button.trailingAnchor.constraint(equalTo: descriptionLabel!.trailingAnchor),
+            button.bottomAnchor.constraint(equalTo: descriptionLabel!.topAnchor, constant: imageView!.frame.height/2)
         ])
         
     }
@@ -84,9 +85,7 @@ class NewsTableViewCell: UITableViewCell {
     func showMoreAdd() {
         let label = newsDescriptionLabel
         let linkLabel = linkLabel
-        let button = likeButton
         linkLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped)))
-        button.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addToFavoritesTapped)))
         let readmoreFont = UIFont(name: "Tamil Sangam MN Bold", size: 11.0)
         let readmoreFontColor = UIColor.blue
         DispatchQueue.main.async {
@@ -97,9 +96,20 @@ class NewsTableViewCell: UITableViewCell {
     }
     
     @objc func addToFavoritesTapped() {
-        self.likeButton.backgroundColor = .green
-        print("bnbnbnbnbnbnnbnbnbnnbnbnbn")
-        
+        let button = likeButton
+        counter = counter + 1
+        if counter%2 == 0 {
+            NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "EUR"))!))
+            NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
+            NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
+            button.tintColor = .red
+        } else {
+            let index = NewsViewController.shared.favoritesTitle.firstIndex(of: "\(newsTitleLabel.text!)")
+            NewsViewController.shared.favoritesTitle.remove(at: index!)
+            NewsViewController.shared.favoritesImage.remove(at: index!)
+            NewsViewController.shared.favoritesSubtitle.remove(at: index!)
+            button.tintColor = .white
+        }
     }
     
     func convertImageToData(_ img: UIImage) -> Data {
@@ -108,16 +118,11 @@ class NewsTableViewCell: UITableViewCell {
         return encoded
     }
     
-    @objc func favoritesTapped() {
-        
-    }
-    
     @objc func tapGestureTapped() {
         print("GESTURE TAPPED")
-        NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "EUR"))!))
-//        NewsViewController.shared.favoritesImage.append(newsImageView.image!)
-        NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
-        NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
+//        NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "EUR"))!))
+//        NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
+//        NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
         
         newsDescriptionLabel.backgroundColor = .green
         print(newsTitleLabel.text ?? "No text")

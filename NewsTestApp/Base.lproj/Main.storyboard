@@ -68,17 +68,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="RBc-xe-GLa"/>
                     <connections>
-                        <outlet property="newsSearchBar" destination="WZU-rs-5BM" id="zwE-rY-6ut"/>
                         <outlet property="newsTableView" destination="x5V-mf-frH" id="giP-vp-Xdb"/>
                         <outlet property="view" destination="93Q-fM-9Sg" id="boM-Xv-gkT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <searchBar contentMode="redraw" id="WZU-rs-5BM">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <textInputTraits key="textInputTraits"/>
-                </searchBar>
             </objects>
             <point key="canvasLocation" x="1797.1014492753625" y="55.580357142857139"/>
         </scene>

@@ -15,6 +15,8 @@ final class NewsViewController: UIViewController {
     @IBOutlet var newsSearchBar: UISearchBar!
     static var shared = NewsViewController()
     var articles: [Article] = []
+    let searchController = UISearchController()
+    var filteredArticles = [Article]()
     let newsTableViewCell = NewsTableViewCell()
     let refreshControl = UIRefreshControl()
     var favoritesTitle: Array <String> {
@@ -50,26 +52,30 @@ final class NewsViewController: UIViewController {
     var searchBarText: String? {
         didSet {
             print(searchBarText!)
-            print(filteredTitle)
-            print(filteredDescription)
+
             //            reloadFilterData()
         }
     }
-    var filteredTitle: [String] = []
-    var filteredDescription: [String] = []
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         newsTableView.dataSource = self
         newsTableView.delegate = self
         loadNews()
-        navigationItem.titleView = newsSearchBar
-        newsSearchBar.delegate = self
+//        navigationItem.titleView = newsSearchBar
+//        newsSearchBar.delegate = self
         refreshSetup()
-        
+//        searchControllerSetup()
 
     }
+    
+//    func searchControllerSetup() {
+//        let search = searchController
+//        search.loadViewIfNeeded()
+//        search.searchResultsUpdater = self
+//
+//
+//    }
     
     func refreshSetup() {
         if #available(iOS 10.0, *) {
@@ -84,25 +90,6 @@ final class NewsViewController: UIViewController {
         let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: color]
         refreshControl.attributedTitle = NSAttributedString(string: "Updating news ...", attributes: attributes)
     }
-    
-    @objc private func refreshNewsData(_ sender: Any) {
-        loadNews()
-        self.newsTableView.reloadData()
-        self.refreshControl.endRefreshing()
-    }
-    
-    func reloadFilterData(shouldReloadTableView: Bool = true) {
-        if let filterText = searchBarText {
-//            filterDataSource(searchBarText)
-        } else {
-//            resetDataSource()
-        }
-        
-        if shouldReloadTableView {
-            newsTableView.reloadData()
-        }
-    }
-    
     
     //    алерт
     func showError(_ error: Error) {
@@ -127,6 +114,12 @@ final class NewsViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @objc private func refreshNewsData(_ sender: Any) {
+        loadNews()
+        self.newsTableView.reloadData()
+        self.refreshControl.endRefreshing()
     }
 }
 
