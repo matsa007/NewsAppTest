@@ -43,7 +43,8 @@ class NewsTableViewCell: UITableViewCell {
         //        descriptionLabel?.lineBreakMode = .byWordWrapping
         
         descriptionLabel?.adjustsFontSizeToFitWidth = true
-        descriptionLabel?.textAlignment = .right
+        descriptionLabel?.textAlignment = .left
+        descriptionLabel?.lineBreakMode = .byWordWrapping
         descriptionLabel?.numberOfLines = 0
         descriptionLabel?.sizeToFit()
         newsDescriptionLabel.addSubview(linkLabel)
@@ -65,7 +66,7 @@ class NewsTableViewCell: UITableViewCell {
         let readmoreFont = UIFont(name: "Tamil Sangam MN Bold", size: 11.0)
         let readmoreFontColor = UIColor.blue
         DispatchQueue.main.async {
-            if label!.numberOfLines <= 100 {
+            if label!.numberOfLines <= 3 {
                 label!.addTrailing(with: "... ", moreText: "Read more", moreTextFont: readmoreFont!, moreTextColor: readmoreFontColor)
             }
         }
@@ -75,16 +76,23 @@ class NewsTableViewCell: UITableViewCell {
         
     }
     
+    func convertImageToData(_ img: UIImage) -> Data {
+        guard let data = img.jpegData(compressionQuality: 0.5) else { return UIImage(named: "EUR")!.jpegData(compressionQuality: 0.5)!}
+        let encoded = try! PropertyListEncoder().encode(data)
+        return encoded
+    }
+    
     @objc func tapGestureTapped() {
         print("GESTURE TAPPED")
-        NewsViewController.shared.favoritesImage.append(newsImageView.image!)
+        NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "EUR"))!))
+//        NewsViewController.shared.favoritesImage.append(newsImageView.image!)
         NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
         NewsViewController.shared.favoritesSubtitle.append(newsDescriptionLabel.text!)
         
         newsDescriptionLabel.backgroundColor = .green
         print(newsTitleLabel.text ?? "No text")
-        //        newsDescriptionLabel.lineBreakMode = .byWordWrapping
-        newsDescriptionLabel.numberOfLines -= 1
+                newsDescriptionLabel.lineBreakMode = .byWordWrapping
+//        newsDescriptionLabel.numberOfLines -= 1
         newsDescriptionLabel.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 150)
         newsDescriptionLabel.textAlignment = .left
         print("NEW NUMBER OF LINES = \(newsDescriptionLabel.numberOfLines)")

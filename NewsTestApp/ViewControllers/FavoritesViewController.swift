@@ -29,12 +29,19 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
         return NewsViewController.shared.favoritesTitle.count
     }
     
+    func convertImageFromData(_ dataImg: Data?) -> UIImage {
+        guard let data = dataImg else { return UIImage(named: "EUR")! }
+        let decoded = try! PropertyListDecoder().decode(Data.self, from: data)
+        let image = UIImage(data: decoded)
+        return image ?? UIImage(named: "EUR")!
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FavoritesTableViewCell", for: indexPath) as? FavoritesTableViewCell
         DispatchQueue.main.async {
             cell?.favoritesTitleLabel.text = NewsViewController.shared.favoritesTitle[indexPath.row]
             cell?.favoritesSubtitleLabel.text = NewsViewController.shared.favoritesSubtitle[indexPath.row]
-            cell?.favoritesImageView.image = NewsViewController.shared.favoritesImage[indexPath.row]
+            cell?.favoritesImageView.image = self.convertImageFromData(NewsViewController.shared.favoritesImage[indexPath.row])
         }
         
         return cell!
@@ -44,6 +51,6 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
         200
     }
     
-   
+    
     
 }

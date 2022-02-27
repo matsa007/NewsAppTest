@@ -36,16 +36,15 @@ final class NewsViewController: UIViewController {
         }
     }
     
-    var favoritesImage: Array <UIImage> = [UIImage(named: "EUR")!]
-//    {
-//        set {
-//            defaults.set(newValue, forKey: "img")
-//        }
-//
-//        get {
-//            defaults.object(forKey: "img") as? [UIImage] ?? UII
-//        }
-//    }
+    var favoritesImage: Array <Data> {
+        set {
+            defaults.set(newValue, forKey: "img")
+        }
+
+        get {
+            defaults.object(forKey: "img") as? [Data] ?? []
+        }
+    }
     
     
     
