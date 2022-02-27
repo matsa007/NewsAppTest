@@ -225,7 +225,7 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        200
+        140
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -234,10 +234,10 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate, UIScro
             let position = scrollView.contentOffset.y
             if position > (self.newsTableView.contentSize.height-scrollView.frame.size.height+100) {
                 DispatchQueue.global(qos: .userInitiated).async {
-                    let plus24HoursDate = Calendar.current.date(byAdding: .day, value: -1, to: self.totaysDate)
+                    let minus24HoursDate = Calendar.current.date(byAdding: .day, value: -1, to: self.totaysDate)
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyy-MM-dd"
-                    let dateForNewsString = dateFormatter.string(from: plus24HoursDate ?? Date())
+                    let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
                     print("DATE FOR NEWS FOR LOAD === \(dateForNewsString)")
                     NetworkManager.shared.loadDataByApi(date: dateForNewsString) { [weak self] result in
                         switch result {

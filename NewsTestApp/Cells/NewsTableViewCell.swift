@@ -60,7 +60,6 @@ class NewsTableViewCell: UITableViewCell {
         descriptionLabel?.sizeToFit()
         descriptionLabel?.addSubview(linkLabel)
         descriptionLabel?.addSubview(button)
-        
         titleLabel?.frame = .init(x: 0, y: 0, width: superview!.frame.width, height: 30)
         imageView?.frame = .init(x: 0, y: 30, width: 100, height: 100)
         descriptionLabel?.frame = .init(x: 100, y: 30, width: (superview!.frame.width - 100), height: 100)
@@ -93,7 +92,7 @@ class NewsTableViewCell: UITableViewCell {
     
     @objc func addToFavoritesTapped() {
         let button = likeButton
-        counter = counter + 1
+        counter += 1
         if counter%2 == 0 {
             NewsViewController.shared.favoritesImage.append(convertImageToData((newsImageView.image ?? UIImage(named: "noImage"))!))
             NewsViewController.shared.favoritesTitle.append(newsTitleLabel.text!)
