@@ -129,6 +129,7 @@ final class NewsViewController: UIViewController, UISearchBarDelegate {
                 let dateForNewsString = dateFormatter.string(from: minus24HoursDate ?? Date())
                 sleep(1)
                 if self.paginationCouner > 7 {
+                    self.paginationCouner = 0
                     /* алерт */
                     DispatchQueue.main.async {
                         let alert = UIAlertController(title: "SORRY", message: "YOU ARE ALLOWED TO SEE NEWS FOR PAST 7 DAYS ONLY ...", preferredStyle: .alert)
