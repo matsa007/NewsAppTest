@@ -1,14 +1,15 @@
 # Apple news application
 Display news with using API [News Api](https://newsapi.org).
 
-- You can read news by theme "Apple".
+- You can read news by theme _"Sport"_.
 - You can read full news in internal _WebView_ by clicking on it.
 - You can filter news by _Search Bar_.
 - All loaded images will saved in _Cache_.
 - Scroll down and more news for day before will apperar but maximum range is for last _7 days_, after reaching the last news you will shown _allert_ and pagination and downloading will ended.
-- You can add by clicking favorite button to save news in _Favorites_ (local storage by _User Defaulsts_).
+- You can add news to favotites by clicking favorite button and save this news in _Favorites_ (local storage by _User Defaulsts_).
 - You can remove news from _Favorites_ as by _favorites button clicking for second time in News_ or by _sliding in Favorites_ tab.
 - You can see more description by clicking on _...Show More_
+- You can _Pull-To_Refresh_
 
 ###### In this project I mastered:
 
@@ -26,7 +27,7 @@ Display news with using API [News Api](https://newsapi.org).
 
 # Tech
 
-- All functions in code a _marked_ with it's description
+- All functions in code are _marked_ with it's description
 
 # Installation
 

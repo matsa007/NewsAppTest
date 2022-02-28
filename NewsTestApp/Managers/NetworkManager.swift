@@ -12,7 +12,7 @@ final class NetworkManager {
     /* функция загрузки и декодирования JSON */
     public func loadDataByApi(date: String, completionHandler: @escaping (Swift.Result<[Article], Error>) -> Void ) {
         /* в url подставляется дата новостей, которую мы передаем на вход функции уже стрингом */
-        let apiStringUrl = "https://newsapi.org/v2/everything?q=apple&from=\(date)&to=\(date)&sortBy=popularity&apiKey=fd1573ac039c49a591c1885212a94d9d"
+        let apiStringUrl = "https://newsapi.org/v2/everything?q=sports&from=\(date)&to=\(date)&sortBy=popularity&apiKey=175e95670c234506b5659a9c771a442e"
         guard let url = URL(string: apiStringUrl) else { return }
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else {
